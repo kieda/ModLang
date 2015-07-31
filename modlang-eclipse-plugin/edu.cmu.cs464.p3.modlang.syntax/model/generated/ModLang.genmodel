@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/edu.cmu.cs464.p3.modlang.syntax/src-gen" editDirectory="/edu.cmu.cs464.p3.modlang.syntax.edit/src"
+    editorDirectory="/edu.cmu.cs464.p3.modlang.syntax.editor/src" modelPluginID="edu.cmu.cs464.p3.modlang.syntax"
+    forceOverwrite="true" modelName="ModLang" updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    complianceLevel="6.0" copyrightFields="false" editPluginID="edu.cmu.cs464.p3.modlang.syntax.edit"
+    editorPluginID="edu.cmu.cs464.p3.modlang.syntax.editor" runtimeVersion="2.10">
+  <genPackages prefix="ModLang" basePackage="edu.cmu.cs464.p3.modlang" disposableProviderFactory="true"
+      fileExtensions="mod,module" ecorePackage="ModLang.ecore#/">
+    <genClasses ecoreClass="ModLang.ecore#//Model">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//Model/modules"/>
+    </genClasses>
+    <genClasses ecoreClass="ModLang.ecore#//Prefix">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//Prefix/spec"/>
+    </genClasses>
+    <genClasses ecoreClass="ModLang.ecore#//Spec">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ModLang.ecore#//Spec/path"/>
+    </genClasses>
+    <genClasses ecoreClass="ModLang.ecore#//Module">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//Module/pf"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//Module/ml"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//Module/spec"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//Module/mod"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute ModLang.ecore#//Module/id"/>
+    </genClasses>
+    <genClasses ecoreClass="ModLang.ecore#//ModuleList">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//ModuleList/open"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//ModuleList/single"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//ModuleList/context"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference ModLang.ecore#//ModuleList/def"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>
