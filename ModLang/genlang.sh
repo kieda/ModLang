@@ -1,3 +1,4 @@
 #!/bin/bash
-java -jar ../java-cup/java-cup-11b.jar -destdir src/edu/cmu/cs464/p3/modulelang/ -parser Parser src/lang/ModuleParser.cup
-../jflex-1.6.1/jflex/bin/jflex -d src/edu/cmu/cs464/p3/modulelang/ src/lang/ModuleLexer.jflex
+dest="src/edu/cmu/cs/zkieda/modlang"
+java -jar ./java-cup/java-cup-11b.jar -destdir $dest -parser Parser src/lang/ModuleParser.cup
+java -jar ./jflex/jflex-1.6.1.jar -d $dest src/lang/ModuleLexer.jflex
