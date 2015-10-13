@@ -1,0 +1,50 @@
+(* decl examples 
+ * Here we will focus on the scoping issues and look at what the evaluator will
+ * do. 
+ *)
+
+
+<someModule> : has
+   some.Module      (* will look in someModule's children, then for class/package *) 
+   me = some.Module (* will look for class/package some.Module *)
+   you = me         (* me is defined in scope, will use one from line above *)
+end
+
+
+(* in this example, note that on the second line we will look in the children
+ * of <someModule.mod>. This is because of our scoping rules that will include
+ * the children. 
+ * 
+ * In line 3, however, the right hand side of the '=' operator changes the
+ * scope. This is to prevent conflicts in case <someModule> happens to 
+ * have a module some.Module. To explicitly reference it when using 
+ * the '=' operator, one would have to do something like this instead
+ * me = <someModule>.some.Module
+ *)
+
+
+(* the reason we have these scoping rules for the ':' operator
+ * is a matter of convenience for rebinding names.
+ * 
+ * Suppose that we have a module
+ *
+ * My.Cool.Module
+ * 
+ * and we wanted to add another module "Sub". This can be done by writing
+ *
+ * My:Cool:Module:Sub
+ *
+ * Without those scoping rules, one would have to write
+ * 
+ * My:My.Cool:My.Cool.Module:Sub
+ * 
+ * Which is unweildy.
+ * 
+ * Note that 
+ * My.Cool.Module:Sub
+ * 
+ * Will only result in Module:Sub.
+ *)
+
+
+(* boyd model craig renolds

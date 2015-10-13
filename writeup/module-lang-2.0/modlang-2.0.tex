@@ -33,11 +33,19 @@ At some point in time any project gets large enough that the developer[s] decide
 
 Here, we present a language used for own sinister goals -- creating a easier way to construct Java modules, especially with respect to our CrowdSimulation project. In our project, a module belongs in a hierarchical tree rooted at a player. Modules present an easy way to make additions to the player's functionality, as well as provide an easy way to construct a tree of dependent modules for testing. Ultimately, we will use the Module Language (ModLang) to construct and perform tests, as well as run the code for our crowd simulation project.\\
 
-At the present moment, we have the lexer, parser, and dynamic semantics working for ModLang 1.0. We will be working towards ModLang 2.0 to provide additional functionality (like importing modules from other files, and a unification of the type system). \\
+%At the present moment, we have the lexer, parser, and dynamic semantics working for ModLang 1.0. We will be working towards ModLang 2.0 to provide additional functionality (like importing modules from other files, and a unification of the type system). \\
 
 \textbf{Keywords.} Programming Languages, Modules
 \end{abstract}
 \pagebreak
+\begin{section}{Introduction}
+%This is the section where the developer goes completely insane and makes her/his homebrew language as meta as possible. We define unified system of importing and using modules. This system allows the user to import and use ModLang files and java packages as as modules. We also formally define and use scope of modules to select submodules. This turns the language into more of a build system but whatever.
+ModLang presents a few novel features to extend the functionality of the Java language. Typically, the development of a large-scale java projects follows a certain pattern -- construction of the framework (roughly 70\% of the work), writing tests and debugging (about 25\%) and finally the implementation which consists of the final 5\%. Ideally, the framework is written so well that the tests and implementation parts are trivial compared to the work of building the framework. ModLang's main purpose is to make framework construction simple and organizable.\\
+
+
+ModLang defines program structures in a tree fashion. We define classes as modules, and a module may have sub-children. We find that the tree structure is a very common and intuitive method for organizing a program. The Java virtual machine loads up the program structure dynamically. Typically, the client will load the program structure once and have it remain static after initialization. During initialization modules are automatically linked together through dependency injection. Dependency injection allows the user to skip the typical constructor initialization step where resources are passed through as parameters.\\
+
+\end{section}
 \begin{section}{Module System (Dynamic Semantics)}
 \begin{subsection}{Module Specification}
 We construct modules in a tree-like system, so modules have two parameterized types, $\textsf{Node}$ and $\textsf{Leaf}$. We use this specification to define the dynamic semantics of the language.\\
@@ -121,6 +129,7 @@ Suppose we link with \verb|noThrow| set to \verb|false|. This code will search t
 
 \end{subsection}
 \end{section}
+\pagebreak
 \setcounter{section}{0}
 \begin{center}\textbf{\LARGE Module Language 2.0} \end{center}
 
@@ -266,9 +275,8 @@ parent(scope(file("hello/World.mod"), "asdf"),
 %\]
 %This generates a hierarchy of tree-like 
 \begin{section}{Static Semantics}
-\begin{quote}
-This is the section where the developer goes completely insane and makes her/his homebrew language as meta as possible. We define unified system of importing and using modules. This system allows the user to import and use ModLang files and java packages as as modules. We also formally define and use scope of modules to select submodules. This turns the language into more of a build system but whatever.
-\end{quote}
+
+
 \begin{subsection}{File Imports}
 Notice that any module program is represented by a single module. This allows a ModLang file to represent a module directly, much like how a java file must can only represent a single public java class. \\
 
@@ -277,8 +285,23 @@ The first capture group of a $\FILEPATH$ represents the name an imported module 
 We permit escape sequences in a $\FILEPATH$ to represent whitespace and other characters that may be represented. We permit all java escape sequences, along with a few more. We add in the $\verb|\s|$ escape sequence to represent a space, and the $\verb|\>|$ escape sequence to represent a $\verb|>|$ character. Actual whitespace in a $\FILEPATH$ can be used to delimit tokens and is ignored. A token in a $\FILEPATH$ is a file separator $(\verb|/|)$, or a sequence of non-whitespace tokens as a file name $(\IDENT)$.\\
 \end{subsection}
 
-In order to express the static semantics of this language, we use a unholy mashup of denotational semantics notation and classic static semantics notation.\\ 
+\begin{subsection}{Semantics}
+%In order to express the static semantics of this language, we use a unholy mashup of denotational semantics notation and classic static semantics notation.\\ 
+We define the static semantics informally. We hope to be able to express these semantics formally (someday).\\
 
+The \textsf{file} and $\IDENT$ are both base cases for constructing a module. For non-base cases, we have three operations that produce a module: $\textsf{scope}$, $\textsf{decl}$, and $\textsf{parent}$. Over all module definitions, we define an ``alias'' that they will be called, and the resulting module structure. We define the function $alias : \nonterm{module} \rightarrow \IDENT$ that defines the alias that is used for the module. In addition, we keep a context that stores information that will decide which java class will be linked based on the current context. By default, the context is the \verb|ClassLoader| which includes the set of all java classes that are modules.\\
+
+\textsf{scope(M, a)} will select the sub-module inside of $M$ given an alias. If there is no module with a matching alias inside of $M$, then this will throw a error. The resulting module of \textsf{scope(M, a)} is the submodule with alias $a$, such that $alias(\textsf{scope(M, a)}) = a$\\
+
+\textsf{parent(M, L)} will add $L$ to the list of children of $M$, rebinding modules with the same alias if necessary. First, we find the initial children of $M$ before adding in $L$. Then, we add the children into the context and evaluate $L$. Then, we add $L$ to the list of children of $M$, then finally remove the children of $M$ from the scope. The resulting module is the final version of $M$, and $alias(\textsf{parent(M, L)}) = alias(M)$. \\
+
+\textsf{decl}$(id, m)$ will bind the alias $id$ to the module $m$. We evaluate $m$ with \emph{transparent} scoping rules, meaning that we do not include any included the sub-children in the scope when evaluating $m$. We do include imports and previous declarations, however. The resulting module of this operation is $m$, and $alias(\textsf{decl}(id, m)) = id$. \\
+
+For examples of how the static semantics work, see \verb|examples.txt|.\\
+
+The \textsf{open}$(M)$ operation will generate a list of modules that are the sub-modules of $M$. 
+
+\begin{comment}
 Since we're dealing with classes in java, a type might have many super types because of inheritance. We write $\tau <: \tau'$ when the class $\tau$ is a subtype of, or extends the class $\tau'$. We define the type \textbf{Ty} to describe java classes, such that $\tau \in \textbf{Ty}$ if and only if $\tau <: \verb|Module|$.\\
 
 We define the type $\textbf{Ns} = \emph{javaRef} \rightharpoonup \textbf{Ty}$ to define our namespace. The  partial function $\Gamma : \textbf{Ns}$ to express a namespace from a java reference to a java module class. Classically $\Gamma \vdash x : \tau\;\emph{valid}$ is written to express that expression $x$  has type $\tau$ under the context $\Gamma$. Here, we will write $(x, \tau) \in \Gamma$ as an equivalent expression.\\
@@ -306,7 +329,9 @@ In order to formally define evaluation rules, we define the current state of the
 
 \end{mathpar}\\
 Notice that in our evaluation rules, we allow imports to shadow previously defined imports.\\
+\end{comment}
 
+\end{subsection}
 \end{section}
 \begin{section}{Design Patterns}
 Because of the unification of the module system, many possible design patterns become possible. A few are listed below
